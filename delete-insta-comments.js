@@ -261,8 +261,8 @@
   let successesSincePause = 0
   let nextPauseAt = rand(CONFIG.pauseEveryMin, CONFIG.pauseEveryMax)
 
-  try {
-    while (true) {
+  while (true) {
+    try {
       const selectVisible = !!findClickableByText('Select')
       const boxesVisible = getCheckboxes().length > 0
 
@@ -325,13 +325,14 @@
       } else {
         await sleep(mediumDelay())
       }
+    } catch (err) {
+      fail(err?.message || err)
+      const backoffMs = errorBackoff()
+      log(`Backing off for ${(backoffMs / 1000).toFixed(1)}s after error`)
+      await sleep(backoffMs)
+      continue
     }
-
-    log(`Finished. Total deleted: ${totalDeleted}`)
-  } catch (err) {
-    fail(err?.message || err)
-    const backoffMs = errorBackoff()
-    log(`Backing off for ${(backoffMs / 1000).toFixed(1)}s after error`)
-    await sleep(backoffMs)
   }
+
+  log(`Finished. Total deleted: ${totalDeleted}`)
 })()
