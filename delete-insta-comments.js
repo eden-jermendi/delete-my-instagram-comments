@@ -5,10 +5,10 @@
     maxShortDelay: 900,
     minMediumDelay: 1400,
     maxMediumDelay: 2400,
-    minLongPause: 25000,
-    maxLongPause: 45000,
-    pauseEveryMin: 1,
-    pauseEveryMax: 1,
+    minLongPause: 12000,
+    maxLongPause: 22000,
+    pauseEveryMin: 3,
+    pauseEveryMax: 5,
     minErrorBackoff: 60000,
     maxErrorBackoff: 120000,
     actionTimeout: 15000,
@@ -31,6 +31,7 @@
 
   const isVisible = (el) => {
     if (!el || !el.isConnected) return false
+
     const style = window.getComputedStyle(el)
     if (style.display === 'none' || style.visibility === 'hidden') return false
     if (style.opacity === '0') return false
@@ -207,7 +208,7 @@
       await sleep(shortDelay())
     }
 
-    await sleep(rand(900, 1600))
+    await sleep(rand(650, 1200))
 
     const selectedCount = getSelectedCount()
     if (selectedCount < 1) {
@@ -226,8 +227,7 @@
     if (!firstDelete) throw new Error('Could not find first Delete button')
 
     await humanClick(firstDelete)
-
-    await sleep(rand(1800, 3200))
+    await sleep(rand(1000, 1800))
 
     const confirmDelete =
       (await waitFor(() => {
@@ -244,8 +244,7 @@
     }
 
     await humanClick(confirmDelete)
-
-    await sleep(rand(4000, 7000))
+    await sleep(rand(2500, 4000))
   }
 
   const waitUntilSelectionClears = async () => {
@@ -255,7 +254,7 @@
       300,
     )
 
-    await sleep(rand(2500, 4500))
+    await sleep(rand(900, 1800))
   }
 
   let totalDeleted = 0
@@ -268,8 +267,19 @@
       const boxesVisible = getCheckboxes().length > 0
 
       if (!selectVisible && !boxesVisible) {
-        log('Nothing left to process')
-        break
+        log('No controls visible, rechecking...')
+
+        await sleep(rand(1200, 2200))
+
+        const selectVisibleAgain = !!findClickableByText('Select')
+        const boxesVisibleAgain = getCheckboxes().length > 0
+
+        if (!selectVisibleAgain && !boxesVisibleAgain) {
+          log('Nothing left to process')
+          break
+        }
+
+        log('Controls came back, continuing...')
       }
 
       if (hasErrorBanner()) {
