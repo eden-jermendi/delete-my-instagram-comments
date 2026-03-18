@@ -1,14 +1,15 @@
 ;(async function () {
   const CONFIG = {
-    batchSize: 5,
+    batchSizeMin: 5,
+    batchSizeMax: 9,
     minShortDelay: 350,
     maxShortDelay: 650,
     minMediumDelay: 1000,
     maxMediumDelay: 1800,
     minLongPause: 6000,
     maxLongPause: 12000,
-    pauseEveryMin: 4,
-    pauseEveryMax: 6,
+    pauseEveryMin: 20,
+    pauseEveryMax: 40,
     minErrorBackoff: 15000,
     maxErrorBackoff: 30000,
     actionTimeout: 15000,
@@ -17,6 +18,7 @@
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
   const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
+  const getBatchSize = () => rand(CONFIG.batchSizeMin, CONFIG.batchSizeMax)
 
   const shortDelay = () => rand(CONFIG.minShortDelay, CONFIG.maxShortDelay)
   const mediumDelay = () => rand(CONFIG.minMediumDelay, CONFIG.maxMediumDelay)
@@ -213,7 +215,11 @@
 
   const selectBatch = async () => {
     const boxes = await enterSelectModeIfNeeded()
-    const batch = boxes.slice(0, Math.min(CONFIG.batchSize, boxes.length))
+
+    const currentBatchSize = getBatchSize()
+    log(`Trying batch size: ${currentBatchSize}`)
+
+    const batch = boxes.slice(0, Math.min(currentBatchSize, boxes.length))
 
     if (!batch.length) return []
 
