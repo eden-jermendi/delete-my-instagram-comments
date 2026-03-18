@@ -1,16 +1,16 @@
 ;(async function () {
   const CONFIG = {
-    batchSize: 1,
+    batchSize: 2,
     minShortDelay: 500,
     maxShortDelay: 900,
     minMediumDelay: 1400,
     maxMediumDelay: 2400,
-    minLongPause: 12000,
-    maxLongPause: 22000,
+    minLongPause: 7000,
+    maxLongPause: 15000,
     pauseEveryMin: 3,
     pauseEveryMax: 5,
-    minErrorBackoff: 60000,
-    maxErrorBackoff: 120000,
+    minErrorBackoff: 15000,
+    maxErrorBackoff: 30000,
     actionTimeout: 15000,
     logPrefix: '[IG Delete]',
   }
@@ -244,7 +244,7 @@
     }
 
     await humanClick(confirmDelete)
-    await sleep(rand(2500, 4000))
+    await sleep(rand(1800, 3000))
   }
 
   const waitUntilSelectionClears = async () => {
@@ -261,20 +261,21 @@
   let successesSincePause = 0
   let nextPauseAt = rand(CONFIG.pauseEveryMin, CONFIG.pauseEveryMax)
 
-  try {
-    while (true) {
+  while (true) {
+    try {
       const selectVisible = !!findClickableByText('Select')
       const boxesVisible = getCheckboxes().length > 0
 
       if (!selectVisible && !boxesVisible) {
-        log('No controls visible, rechecking...')
+        log('No controls visible, waiting to confirm...')
 
-        await sleep(rand(1200, 2200))
+        const controlsReturned = await waitFor(
+          () => !!findClickableByText('Select') || getCheckboxes().length > 0,
+          6000,
+          250,
+        )
 
-        const selectVisibleAgain = !!findClickableByText('Select')
-        const boxesVisibleAgain = getCheckboxes().length > 0
-
-        if (!selectVisibleAgain && !boxesVisibleAgain) {
+        if (!controlsReturned) {
           log('Nothing left to process')
           break
         }
@@ -324,13 +325,14 @@
       } else {
         await sleep(mediumDelay())
       }
+    } catch (err) {
+      fail(err?.message || err)
+      const backoffMs = errorBackoff()
+      log(`Backing off for ${(backoffMs / 1000).toFixed(1)}s after error`)
+      await sleep(backoffMs)
+      continue
     }
-
-    log(`Finished. Total deleted: ${totalDeleted}`)
-  } catch (err) {
-    fail(err?.message || err)
-    const backoffMs = errorBackoff()
-    log(`Backing off for ${(backoffMs / 1000).toFixed(1)}s after error`)
-    await sleep(backoffMs)
   }
+
+  log(`Finished. Total deleted: ${totalDeleted}`)
 })()
