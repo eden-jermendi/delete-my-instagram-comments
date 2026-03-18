@@ -54,6 +54,56 @@ If you choose to tune it further:
 
 Use your own judgement and test carefully.
 
+### For reference
+
+These are the main levers that affect speed vs reliability:
+
+- **batchSize**
+  - Recommended: `2–3`
+  - `3` has been tested as stable
+  - Higher values may increase speed but also increase the chance of selection issues or UI desync
+
+- **minShortDelay / maxShortDelay**
+  - Controls delay between selecting individual comments
+  - Can be slightly reduced, but too low may cause selection to not register
+
+- **minMediumDelay / maxMediumDelay**
+  - Controls delay between cycles (when not pausing)
+  - Safe to reduce a little, but going too low can cause UI state issues
+
+- **minLongPause / maxLongPause**
+  - Controls periodic cooldown pauses
+  - Reducing these increases speed but may trigger more frequent Instagram interruptions
+
+- **pauseEveryMin / pauseEveryMax**
+  - How often long pauses occur
+  - Lower values = more frequent pauses (safer)
+  - Higher values = faster but more likely to hit rate limits
+
+- **minErrorBackoff / maxErrorBackoff**
+  - Delay after errors
+  - Can be shortened, but too aggressive retries may cause repeated failures
+
+---
+
+### Practical tuning advice
+
+- Change **one variable at a time**
+- Test on small batches before running at scale
+- If you see frequent:
+  - "Selection did not register"
+  - UI controls disappearing
+  - repeated error popups  
+    → your timings are too aggressive
+
+- If the script runs smoothly but slower than desired  
+  → gradually reduce:
+  - long pauses first
+  - then medium delays
+  - only adjust batchSize last
+
+- If unsure, prioritise stability over speed — a slightly slower script that runs unattended is usually more effective
+
 ---
 
 ## Why This Exists
