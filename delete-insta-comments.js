@@ -1,12 +1,12 @@
 ;(async function () {
   const CONFIG = {
-    batchSize: 1,
+    batchSize: 2,
     minShortDelay: 500,
     maxShortDelay: 900,
     minMediumDelay: 1400,
     maxMediumDelay: 2400,
-    minLongPause: 12000,
-    maxLongPause: 22000,
+    minLongPause: 7000,
+    maxLongPause: 15000,
     pauseEveryMin: 3,
     pauseEveryMax: 5,
     minErrorBackoff: 15000,
@@ -244,7 +244,7 @@
     }
 
     await humanClick(confirmDelete)
-    await sleep(rand(2500, 4000))
+    await sleep(rand(1800, 3000))
   }
 
   const waitUntilSelectionClears = async () => {
