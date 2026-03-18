@@ -31,6 +31,7 @@
 
   const isVisible = (el) => {
     if (!el || !el.isConnected) return false
+
     const style = window.getComputedStyle(el)
     if (style.display === 'none' || style.visibility === 'hidden') return false
     if (style.opacity === '0') return false
@@ -226,7 +227,6 @@
     if (!firstDelete) throw new Error('Could not find first Delete button')
 
     await humanClick(firstDelete)
-
     await sleep(rand(1000, 1800))
 
     const confirmDelete =
@@ -244,7 +244,6 @@
     }
 
     await humanClick(confirmDelete)
-
     await sleep(rand(2500, 4000))
   }
 
@@ -268,8 +267,19 @@
       const boxesVisible = getCheckboxes().length > 0
 
       if (!selectVisible && !boxesVisible) {
-        log('Nothing left to process')
-        break
+        log('No controls visible, rechecking...')
+
+        await sleep(rand(1200, 2200))
+
+        const selectVisibleAgain = !!findClickableByText('Select')
+        const boxesVisibleAgain = getCheckboxes().length > 0
+
+        if (!selectVisibleAgain && !boxesVisibleAgain) {
+          log('Nothing left to process')
+          break
+        }
+
+        log('Controls came back, continuing...')
       }
 
       if (hasErrorBanner()) {
