@@ -36,6 +36,7 @@ Built to work with Instagram’s current desktop web UI.
 - Deletes comments in batches
 - Adjustable timing to better handle UI loading and async behavior
 - Basic error detection with automatic backoff
+- Automatic in-DOM error handling (detects Instagram error popups and clicks **OK** to resume)
 - Works with Instagram’s current desktop comments management flow
 
 ---
@@ -59,8 +60,8 @@ Use your own judgement and test carefully.
 These are the main levers that affect speed vs reliability:
 
 - **batchSize**
-  - Recommended: `2–3`
-  - `3` has been tested as stable
+  - Recommended: `3–5`
+  - Tested stable up to: `5`
   - Higher values may increase speed but also increase the chance of selection issues or UI desync
 
 - **minShortDelay / maxShortDelay**
