@@ -31,6 +31,22 @@ Built to work with Instagram’s current desktop web UI.
 
 ---
 
+## Configuration Notes
+
+This script includes configurable timing values, batch size, pause intervals, and retry delays.
+
+You may be able to make it faster by adjusting those values, but reliability can drop quickly if the timings are too aggressive for Instagram’s current UI state.
+
+If you choose to tune it further:
+
+- change one value at a time
+- test on a small number of comments first
+- expect different results if Instagram changes their interface
+
+Use your own judgement and test carefully.
+
+---
+
 ## Features
 
 - Deletes comments in batches
