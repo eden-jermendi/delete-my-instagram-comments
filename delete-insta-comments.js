@@ -178,6 +178,20 @@
     )
   }
 
+  const dismissErrorModalIfPresent = async () => {
+    const okBtn =
+      findClickableByText('OK') ||
+      findClickableByText('Ok') ||
+      findClickableByText('Close')
+
+    if (!okBtn) return false
+
+    log('Dismissing error modal...')
+    await humanClick(okBtn)
+    await sleep(rand(800, 1400))
+    return true
+  }
+
   const enterSelectModeIfNeeded = async () => {
     let boxes = getCheckboxes()
     if (boxes.length > 0) return boxes
@@ -263,11 +277,15 @@
 
   while (true) {
     try {
+      await dismissErrorModalIfPresent()
+
       const selectVisible = !!findClickableByText('Select')
       const boxesVisible = getCheckboxes().length > 0
 
       if (!selectVisible && !boxesVisible) {
         log('No controls visible, waiting to confirm...')
+
+        await dismissErrorModalIfPresent()
 
         const controlsReturned = await waitFor(
           () => !!findClickableByText('Select') || getCheckboxes().length > 0,
@@ -284,6 +302,7 @@
       }
 
       if (hasErrorBanner()) {
+        await dismissErrorModalIfPresent()
         const backoffMs = errorBackoff()
         log(
           `Instagram error detected. Backing off for ${(backoffMs / 1000).toFixed(1)}s`,
@@ -301,8 +320,10 @@
       log(`Selected ${getSelectedCount()} comment(s)`)
       await clickDeleteFlow()
       await waitUntilSelectionClears()
+      await dismissErrorModalIfPresent()
 
       if (hasErrorBanner()) {
+        await dismissErrorModalIfPresent()
         const backoffMs = errorBackoff()
         log(
           `Delete error detected after action. Backing off for ${(backoffMs / 1000).toFixed(1)}s`,
@@ -326,6 +347,7 @@
         await sleep(mediumDelay())
       }
     } catch (err) {
+      await dismissErrorModalIfPresent()
       fail(err?.message || err)
       const backoffMs = errorBackoff()
       log(`Backing off for ${(backoffMs / 1000).toFixed(1)}s after error`)
