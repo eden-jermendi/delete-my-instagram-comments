@@ -1,12 +1,12 @@
 ;(async function () {
   const CONFIG = {
-    batchSize: 3,
+    batchSize: 4,
     minShortDelay: 350,
     maxShortDelay: 650,
     minMediumDelay: 1000,
     maxMediumDelay: 1800,
-    minLongPause: 7000,
-    maxLongPause: 15000,
+    minLongPause: 6000,
+    maxLongPause: 12000,
     pauseEveryMin: 4,
     pauseEveryMax: 6,
     minErrorBackoff: 15000,
