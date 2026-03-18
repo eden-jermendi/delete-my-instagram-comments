@@ -9,8 +9,8 @@
     maxLongPause: 22000,
     pauseEveryMin: 3,
     pauseEveryMax: 5,
-    minErrorBackoff: 60000,
-    maxErrorBackoff: 120000,
+    minErrorBackoff: 15000,
+    maxErrorBackoff: 30000,
     actionTimeout: 15000,
     logPrefix: '[IG Delete]',
   }
@@ -267,14 +267,15 @@
       const boxesVisible = getCheckboxes().length > 0
 
       if (!selectVisible && !boxesVisible) {
-        log('No controls visible, rechecking...')
+        log('No controls visible, waiting to confirm...')
 
-        await sleep(rand(1200, 2200))
+        const controlsReturned = await waitFor(
+          () => !!findClickableByText('Select') || getCheckboxes().length > 0,
+          6000,
+          250,
+        )
 
-        const selectVisibleAgain = !!findClickableByText('Select')
-        const boxesVisibleAgain = getCheckboxes().length > 0
-
-        if (!selectVisibleAgain && !boxesVisibleAgain) {
+        if (!controlsReturned) {
           log('Nothing left to process')
           break
         }
