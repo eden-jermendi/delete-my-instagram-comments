@@ -34,6 +34,7 @@ Built to work with Instagram’s current desktop web UI.
 ## Features
 
 - Deletes comments in batches
+- **Randomized batch size per cycle (between 5–9) for more human-like behavior**
 - Adjustable timing to better handle UI loading and async behavior
 - Basic error detection with automatic backoff
 - Automatic in-DOM error handling (detects Instagram error popups and clicks **OK** to resume)
@@ -43,7 +44,7 @@ Built to work with Instagram’s current desktop web UI.
 
 ## Configuration Notes
 
-This script includes configurable timing values, batch size, pause intervals, and retry delays.
+This script includes configurable timing values, batch size range, pause intervals, and retry delays.
 
 You may be able to make it faster by adjusting those values, but reliability can drop quickly if the timings are too aggressive for Instagram’s current UI state.
 
@@ -59,10 +60,10 @@ Use your own judgement and test carefully.
 
 These are the main levers that affect speed vs reliability:
 
-- **batchSize**
-  - Recommended: `3–5`
-  - Tested stable up to: `5`
-  - Higher values may increase speed but also increase the chance of selection issues or UI desync
+- **batchSizeMin / batchSizeMax**
+  - Default: `5–9` (randomized each batch)
+  - Higher ranges increase speed but can increase UI instability
+  - Lower ranges improve stability but reduce throughput
 
 - **minShortDelay / maxShortDelay**
   - Controls delay between selecting individual comments
@@ -77,7 +78,7 @@ These are the main levers that affect speed vs reliability:
   - Reducing these increases speed but may trigger more frequent Instagram interruptions
 
 - **pauseEveryMin / pauseEveryMax**
-  - How often long pauses occur
+  - How often long pauses occur (based on total comments processed, not batches)
   - Lower values = more frequent pauses (safer)
   - Higher values = faster but more likely to hit rate limits
 
@@ -101,7 +102,7 @@ These are the main levers that affect speed vs reliability:
   → gradually reduce:
   - long pauses first
   - then medium delays
-  - only adjust batchSize last
+  - adjust batch size range carefully
 
 - If unsure, prioritise stability over speed — a slightly slower script that runs unattended is usually more effective
 
