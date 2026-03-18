@@ -5,8 +5,8 @@
     maxShortDelay: 900,
     minMediumDelay: 1400,
     maxMediumDelay: 2400,
-    minLongPause: 25000,
-    maxLongPause: 45000,
+    minLongPause: 12000,
+    maxLongPause: 22000,
     pauseEveryMin: 3,
     pauseEveryMax: 5,
     minErrorBackoff: 60000,
@@ -207,7 +207,7 @@
       await sleep(shortDelay())
     }
 
-    await sleep(rand(900, 1600))
+    await sleep(rand(650, 1200))
 
     const selectedCount = getSelectedCount()
     if (selectedCount < 1) {
@@ -227,7 +227,7 @@
 
     await humanClick(firstDelete)
 
-    await sleep(rand(1800, 3200))
+    await sleep(rand(1000, 1800))
 
     const confirmDelete =
       (await waitFor(() => {
@@ -245,7 +245,7 @@
 
     await humanClick(confirmDelete)
 
-    await sleep(rand(4000, 7000))
+    await sleep(rand(2500, 4000))
   }
 
   const waitUntilSelectionClears = async () => {
@@ -255,7 +255,7 @@
       300,
     )
 
-    await sleep(rand(2500, 4500))
+    await sleep(rand(900, 1800))
   }
 
   let totalDeleted = 0
