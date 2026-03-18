@@ -1,6 +1,6 @@
 ;(async function () {
   const CONFIG = {
-    batchSize: 2,
+    batchSize: 3,
     minShortDelay: 500,
     maxShortDelay: 900,
     minMediumDelay: 1400,

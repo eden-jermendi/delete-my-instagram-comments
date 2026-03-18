@@ -17,15 +17,15 @@ Built to work with Instagram’s current desktop web UI.
 ## How to Use
 
 1. Go to:
-   https://www.instagram.com/your_activity/interactions/comments
+   `https://www.instagram.com/your_activity/interactions/comments`
 
 2. Open DevTools:
    - Mac: `Cmd + Option + J`
    - Windows: `Ctrl + Shift + J`
 
-3. Copy entire contents of `delete-insta-comments.js`
+3. Copy the entire contents of `delete-insta-comments.js`
 
-4. Paste the script into the Console tab
+4. Paste the script into the **Console** tab
 
 5. Press Enter
 
@@ -34,9 +34,75 @@ Built to work with Instagram’s current desktop web UI.
 ## Features
 
 - Deletes comments in batches
-- Human-like delays to reduce detection risk
-- Handles UI loading and async behaviour
+- Adjustable timing to better handle UI loading and async behavior
 - Basic error detection with automatic backoff
+- Works with Instagram’s current desktop comments management flow
+
+---
+
+## Configuration Notes
+
+This script includes configurable timing values, batch size, pause intervals, and retry delays.
+
+You may be able to make it faster by adjusting those values, but reliability can drop quickly if the timings are too aggressive for Instagram’s current UI state.
+
+If you choose to tune it further:
+
+- change one value at a time
+- test on a small number of comments first
+- expect different results if Instagram changes their interface
+
+Use your own judgement and test carefully.
+
+### For reference
+
+These are the main levers that affect speed vs reliability:
+
+- **batchSize**
+  - Recommended: `2–3`
+  - `3` has been tested as stable
+  - Higher values may increase speed but also increase the chance of selection issues or UI desync
+
+- **minShortDelay / maxShortDelay**
+  - Controls delay between selecting individual comments
+  - Can be slightly reduced, but too low may cause selection to not register
+
+- **minMediumDelay / maxMediumDelay**
+  - Controls delay between cycles (when not pausing)
+  - Safe to reduce a little, but going too low can cause UI state issues
+
+- **minLongPause / maxLongPause**
+  - Controls periodic cooldown pauses
+  - Reducing these increases speed but may trigger more frequent Instagram interruptions
+
+- **pauseEveryMin / pauseEveryMax**
+  - How often long pauses occur
+  - Lower values = more frequent pauses (safer)
+  - Higher values = faster but more likely to hit rate limits
+
+- **minErrorBackoff / maxErrorBackoff**
+  - Delay after errors
+  - Can be shortened, but too aggressive retries may cause repeated failures
+
+---
+
+### Practical tuning advice
+
+- Change **one variable at a time**
+- Test on small batches before running at scale
+- If you see frequent:
+  - "Selection did not register"
+  - UI controls disappearing
+  - repeated error popups  
+    → your timings are too aggressive
+
+- If the script runs smoothly but slower than desired  
+  → gradually reduce:
+  - long pauses first
+  - then medium delays
+  - only adjust batchSize last
+
+- If unsure, prioritise stability over speed — a slightly slower script that runs unattended is usually more effective
 
 ---
 
@@ -50,7 +116,7 @@ This script is a fresh implementation designed to work with the current UI and b
 ## Acknowledgement
 
 Inspired by an older gist by sbolel:  
-https://gist.github.com/sbolel/a2b2bfde16b3ab185fbc2e2049240abc
+`https://gist.github.com/sbolel/a2b2bfde16b3ab185fbc2e2049240abc`
 
 This project is a rewritten implementation for Instagram’s updated interface.
 
