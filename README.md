@@ -4,6 +4,8 @@ A simple JavaScript script to bulk delete your own Instagram comments using the 
 
 Built to work with Instagram’s current desktop web UI.
 
+>Tested and working as of 17/05/2026
+
 ---
 
 ## ⚠️ Disclaimer
